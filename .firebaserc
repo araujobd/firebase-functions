@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "reise-gps"
+    "default": "reise-gps",
+    "reise-gps": "reise-gps"
   }
 }
