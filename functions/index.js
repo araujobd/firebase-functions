@@ -61,6 +61,42 @@ function salvaDescricao(ref, id, desc){
   ref.child('perfil/passageiro').child(id).child('descricao').set(desc);
 }
 
+// Motorista 
 
+exports.motorista = functions.database.ref('users/motorista/{uid}').onWrite(event => {
+  const rootRef = event.data.ref.root;
+  const data = event.data.val();
 
+  salvaMotorista(rootRef, data);
+});
 
+function salvaMotorista(ref, data){
+  const id = data.uid;
+  salvaNomeMot(ref, id, data.nome);
+  salvaFotoMot(ref, id, data.fotoUrl);
+  salvaTelefoneMot(ref, id, data.telefone);
+  salvaEnderecoMot(ref, id, data.endereco);
+  salvaDescricaoMot(ref, id, data.descricao);
+}
+
+function salvaNomeMot(ref, id, nome){
+  ref.child('nav/motorista').child(id).child('nome').set(nome);
+  ref.child('perfil/motorista').child(id).child('nome').set(nome);
+}
+
+function salvaFotoMot(ref, id, foto){
+  ref.child('nav/motorista').child(id).child('foto').set(foto);
+  ref.child('perfil/motorista').child(id).child('foto').set(foto);
+}
+
+function salvaTelefoneMot(ref, id, tel){
+  ref.child('perfil/motorista').child(id).child('telefone').set(tel);
+}
+
+function salvaEnderecoMot(ref, id, end){
+  ref.child('perfil/motorista').child(id).child('endereco').set(end);
+}
+
+function salvaDescricaoMot(ref, id, desc){
+  ref.child('perfil/motorista').child(id).child('descricao').set(desc);
+}
