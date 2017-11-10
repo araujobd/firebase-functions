@@ -61,7 +61,7 @@ function salvaDescricao(ref, id, desc){
   ref.child('perfil/passageiro').child(id).child('descricao').set(desc);
 }
 
-// Motorista 
+// Motorista
 
 exports.motorista = functions.database.ref('users/motorista/{uid}').onWrite(event => {
   const rootRef = event.data.ref.root;
@@ -100,3 +100,27 @@ function salvaEnderecoMot(ref, id, end){
 function salvaDescricaoMot(ref, id, desc){
   ref.child('perfil/motorista').child(id).child('descricao').set(desc);
 }
+
+// Viagens
+
+function salvaOrigem(ref, id, origem){
+  ref.child('viagem').child(id).child('origem').set(origem);
+  ref.child('detalhes_viagens_motorista').child(id).child('origem').set(origem);
+  ref.child('viagem_motorista').child(id).child('origem').set(origem);
+  ref.child('detalhes_viagens_busca').child(id).child('origem').set(origem);
+  ref.child('busca_viagens').child(id).child('origem').set(origem);
+}
+
+function salvaDestino(ref, id, destino){
+  ref.child('destino').child(id).child('destino').set(destino);
+  ref.child('detalhes_viagens_motorista').child(id).child('destino').set(destino);
+  ref.child('viagem_motorista').child(id).child('destino').set(destino);
+  ref.child('detalhes_viagens_busca').child(id).child('destino').set(destino);
+  ref.child('busca_viagens').child(id).child('destino').set(destino);
+}
+
+
+
+
+
+
