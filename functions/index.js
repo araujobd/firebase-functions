@@ -7,7 +7,8 @@ const functions = require('firebase-functions');
 //  response.send("Hello from Firebase!");
 // });
 
-exports.test = functions.database.ref('nav/passageiro/{uid}/nome').onWrite(event => {
+/*
+  exports.test = functions.database.ref('nav/passageiro/{uid}/nome').onWrite(event => {
   const rootRef = event.data.ref.root;
   const old = event.data.val();
   const upper = passaNome(rootRef, old);
@@ -21,6 +22,7 @@ function passaNome(ref, nome) {
 
   return nome.toUpperCase();
 }
+ */
 
 exports.passageiro = functions.database.ref('users/passageiro/{uid}').onWrite(event => {
   const rootRef = event.data.ref.root;
@@ -45,8 +47,8 @@ function salvaNome(ref, id, nome){
 }
 
 function salvaFoto(ref, id, foto){
-  ref.child('nav/passageiro').child(id).child('foto').set(foto);
-  ref.child('perfil/passageiro').child(id).child('foto').set(foto);
+  ref.child('nav/passageiro').child(id).child('fotoUrl').set(foto);
+  ref.child('perfil/passageiro').child(id).child('fotoUrl').set(foto);
 }
 
 function salvaTelefone(ref, id, tel){
@@ -85,8 +87,8 @@ function salvaNomeMot(ref, id, nome){
 }
 
 function salvaFotoMot(ref, id, foto){
-  ref.child('nav/motorista').child(id).child('foto').set(foto);
-  ref.child('perfil/motorista').child(id).child('foto').set(foto);
+  ref.child('nav/motorista').child(id).child('fotoUrl').set(foto);
+  ref.child('perfil/motorista').child(id).child('fotoUrl').set(foto);
 }
 
 function salvaTelefoneMot(ref, id, tel){
