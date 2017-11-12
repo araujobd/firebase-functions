@@ -105,22 +105,50 @@ function salvaDescricaoMot(ref, id, desc){
 
 // Viagens
 
-function salvaOrigem(ref, id, origem){
-  ref.child('viagem').child(id).child('origem').set(origem);
+
+exports.viagem = functions.database.ref('viagens/{uid_via}').onWrite(event => {
+  const rootRef = event.data.ref.root;
+  const data = event.data.val();
+
+  salvaViagem(rootRef, data);
+});
+
+function salvaViagem(ref, data){
+	const id = data.uid_via;
+	const id_mot = data.uid_mot
+	salvaOrigem(ref, id, id_mot, data.origem);
+	salvaDestino(ref, id, id_mot, data.destino);
+	salvaPreco(ref, id, id_mot, data.preco);
+	salvaHora(ref, id, id_mot, data.hora);
+}
+
+function salvaOrigem(ref, id, id_mot, origem){
   ref.child('detalhes_viagens_motorista').child(id).child('origem').set(origem);
-  ref.child('viagem_motorista').child(id).child('origem').set(origem);
+  ref.child('viagem_motorista').child(id_mot).child(id).child('origem').set(origem);
   ref.child('detalhes_viagens_busca').child(id).child('origem').set(origem);
   ref.child('busca_viagens').child(id).child('origem').set(origem);
 }
 
-function salvaDestino(ref, id, destino){
-  ref.child('destino').child(id).child('destino').set(destino);
+function salvaDestino(ref, id, id_mot, destino){
   ref.child('detalhes_viagens_motorista').child(id).child('destino').set(destino);
-  ref.child('viagem_motorista').child(id).child('destino').set(destino);
+  ref.child('viagem_motorista').child(id_mot).child(id).child('destino').set(destino);
   ref.child('detalhes_viagens_busca').child(id).child('destino').set(destino);
   ref.child('busca_viagens').child(id).child('destino').set(destino);
 }
 
+function salvaPreco(ref, id, id_mot, preco){
+  ref.child('detalhes_viagens_motorista').child(id).child('preco').set(preco);
+  ref.child('viagem_motorista').child(id_mot).child(id).child('preco').set(preco);
+  ref.child('detalhes_viagens_busca').child(id).child('preco').set(preco);
+  ref.child('busca_viagens').child(id).child('preco').set(preco);
+}
+
+function salvaHora(ref, id, id_mot, hora){
+  ref.child('detalhes_viagens_motorista').child(id).child('hora').set(hora);
+  ref.child('viagem_motorista').child(id_mot).child(id).child('hora').set(hora);
+  ref.child('detalhes_viagens_busca').child(id).child('hora').set(hora);
+  ref.child('busca_viagens').child(id).child('hora').set(hora);
+}
 
 
 
