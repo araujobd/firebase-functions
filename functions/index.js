@@ -112,12 +112,12 @@ exports.viagem = functions.database.ref('viagens/{uid_via}').onWrite(event => {
 });
 
 function salvaViagem(ref, data){
-	const id = data.uid_via;
-	const id_mot = data.uid_mot
-	salvaOrigem(ref, id, id_mot, data.origem);
-	salvaDestino(ref, id, id_mot, data.destino);
-	salvaPreco(ref, id, id_mot, data.preco);
-	salvaHora(ref, id, id_mot, data.hora);
+  const id = data.uid_via;
+  const id_mot = data.uid_mot
+  salvaOrigem(ref, id, id_mot, data.origem);
+  salvaDestino(ref, id, id_mot, data.destino);
+  salvaPreco(ref, id, id_mot, data.preco);
+  salvaHora(ref, id, id_mot, data.hora);
 }
 
 function salvaOrigem(ref, id, id_mot, origem){
