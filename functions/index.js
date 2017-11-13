@@ -104,8 +104,6 @@ function salvaDescricaoMot(ref, id, desc){
 }
 
 // Viagens
-
-
 exports.viagem = functions.database.ref('viagens/{uid_via}').onWrite(event => {
   const rootRef = event.data.ref.root;
   const data = event.data.val();
@@ -151,6 +149,52 @@ function salvaHora(ref, id, id_mot, hora){
 }
 
 
+// Carro
+exports.carro = functions.database.ref('users/carro/{uid}').onWrite(event => {
+  const rootRef = event.data.ref.root;
+  const data = event.data.val();
 
+function salvaHora(ref, id, id_mot, hora){
+  ref.child('detalhes_viagens_motorista').child(id).child('hora').set(hora);
+  ref.child('viagem_motorista').child(id_mot).child(id).child('hora').set(hora);
+  ref.child('detalhes_viagens_busca').child(id).child('hora').set(hora);
+  ref.child('busca_viagens').child(id).child('hora').set(hora);
+}
+  salvaCarro(rootRef, data);
+});
 
+function salvaCarro(ref, data){
+  const id = data.uid;
+  const id_mot = data.uid_mot;
+  salvaPlaca(ref, id, id_mot, data.placa);
+  salvaModelo(ref, id, id_mot, data.modelo);
+  salvaCor(ref, id, id_mot, data.cor);
+  salvaVagas(ref, id, id_mot, data.vagas);
+  salvaVagas_crianca(ref, id, id_mot, data.vagas_crianca);
+}
+
+function salvaPlaca(ref, id, placa){
+  ref.child('carro').child(id_mot).child(id).child('placa').set(placa);
+  ref.child('motorista').child(id_mot).child('carro').child(id).child('placa').set(placa);
+}
+
+function salvaModelo(ref, id, modelo){
+  ref.child('carro').child(id_mot).child(id).child('modelo').set(modelo);
+  ref.child('motorista').child(id_mot).child('carro').child(id).child('modelo').set(modelo);
+}
+
+function salvaCor(ref, id, cor){
+  ref.child('carro').child(id_mot).child(id).child('cor').set(cor);
+  ref.child('motorista').child(id_mot).child('carro').child(id).child('cor').set(cor);
+}
+
+function salvaVagas(ref, id, vagas){
+  ref.child('carro').child(id_mot).child(id).child('vagas').set(vagas);
+  ref.child('motorista').child(id_mot).child('carro').child(id).child('vagas').set(vagas);
+}
+
+function salvaVagas_crianca(ref, id, vagas_criaca){
+  ref.child('carro').child(id_mot).child(id).child('vagas_crianca').set(vagas_crianca);
+  ref.child('motorista').child(id_mot).child('carro').child(id).child('vagas_crianca').set(vagas_crianca);
+}
 
