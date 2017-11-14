@@ -106,12 +106,6 @@ exports.carro = functions.database.ref('users/carro/{uid}').onWrite(event => {
   const rootRef = event.data.ref.root;
   const data = event.data.val();
 
-function salvaHora(ref, id, id_mot, hora){
-  ref.child('detalhes_viagens_motorista').child(id).child('hora').set(hora);
-  ref.child('viagem_motorista').child(id_mot).child(id).child('hora').set(hora);
-  ref.child('detalhes_viagens_busca').child(id).child('hora').set(hora);
-  ref.child('busca_viagens').child(id).child('hora').set(hora);
-}
   salvaCarro(rootRef, data);
 });
 
@@ -150,3 +144,52 @@ function salvaVagas_crianca(ref, id, vagas_criaca){
   ref.child('motorista').child(id_mot).child('carro').child(id).child('vagas_crianca').set(vagas_crianca);
 }
 
+
+// Reserva
+exports.reserva = functions.database.ref('viagens/{uid_via}/passageiros/{uid_pas}').onWrite(event => {
+  const rootRef = event.data.ref.root;
+  const nodeParent = event.data.ref.parent.parent;
+  const data = event.data.val();
+
+  realizarReserva(rootRef, data, nodeParent);
+});
+
+function realizarReserva(rootRef, data, nodeParent){
+	const id_pas = data.uid_pas;
+	const id_via = nodeParent.uid_via;
+	const id_mot = nodeParent.uid_mot;
+
+	salvaOrigemRes(rootRef,id_pas,id_via,nodeParent.origem);
+	salvaDestinoRes(rootRef,id_pas,id_via,nodeParent.destino);
+	salvaPrecoRes(rootRef,id_pas,id_via,nodeParent.preco);
+	salvaDataRes(rootRef,id_pas,id_via,nodeParent.data);
+	salvaHoraRes(rootRef,id_pas,id_via,nodeParent.hora);
+	salvaUidMotRes(rootRef,id_pas,id_via,id_mot.uid);
+	salvaNomeMotRes(rootRef,id_pas,id_via,id_mot.nome);
+	salvaFotoMotRes(rootRef,id_pas,id_via,id_mot.fotoUrl);
+}
+
+function salvaOrigemRes(ref, id_pas, id_via, origem){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('origem').set(origem);
+}
+function salvaDestinoRes(ref, id_pas, id_via, destino){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('destino').set(destino);
+}
+function salvaPrecoRes(ref, id_pas, id_via, preco){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('preco').set(preco);
+}
+function salvaDataRes(ref, id_pas, id_via, data){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('data').set(data);
+}
+function salvaHoraRes(ref, id_pas, id_via, hora){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('hora').set(hora);
+}
+function salvaUidMotRes(ref, id_pas, id_via, id_mot){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('motorista').child('uid').set(id_mot);
+}
+function salvaNomeMotRes(ref, id_pas, id_via, nome){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('motorista').child('nome').set(nome);
+}
+function salvaFotoMotRes(ref, id_pas, id_via, foto){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('motorista').child('fotoUrl').set(foto);
+}
