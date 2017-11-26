@@ -50,7 +50,7 @@ function salvaDescricao(ref, id, desc){
 
 // Motorista
 
-exports.motorista = functions.database.ref('users/motorista/{uid}').onWrite(event => {
+exports.motorista = functions.database.ref('users/motoristas/{uid}').onWrite(event => {
   const rootRef = event.data.ref.root;
   const data = event.data.val();
 
@@ -98,7 +98,8 @@ exports.viagem = functions.database.ref('viagens/{uid}').onWrite(event => {
 
 function salvaViagem(ref, data){
   const id = data.uid;
-  const id_mot = data.motorista
+  const id_mot = data.uid_mot
+
   salvaOrigem(ref, id, id_mot, data.origem);
   salvaDestino(ref, id, id_mot, data.destino);
   salvaPreco(ref, id, id_mot, data.preco);
@@ -110,8 +111,10 @@ function salvaViagem(ref, data){
 }
 
 function salvaVagasViagem(ref, id, id_mot, vagas){
-  ref.child('busca_viagens').child(id).child('vagas_disp').set(vagas);
-  ref.child('detalhes_viagens_busca').child(id).child('vagas_disp').set(vagas);
+  ref.child('busca_viagens').child(id).child('qtd_vagas').set(vagas);
+  ref.child('detalhes_viagens_busca').child(id).child('qtd_vagas').set(vagas);
+  ref.child('detalhes_viagens_motorista').child(id).child('qtd_vagas').set(vagas);
+  ref.child('viagem_motorista').child(id_mot).child(id).child('qtd_vagas').set(vagas);
 }
 
 function salvaUidViagem(ref, id, id_mot){
@@ -161,7 +164,7 @@ function salvaData(ref, id, id_mot, data){
 
 
 // Carro
-exports.carro = functions.database.ref('users/motoristas/{uid}/carro').onWrite(event => {
+/*exports.carro = functions.database.ref('users/motoristas/{uid}/carro').onWrite(event => {
   const rootRef = event.data.ref.root;
   const data = event.data.val();
 
@@ -175,7 +178,7 @@ function salvaCarro(ref, data){
 
 function salvaVagas(ref, id, vagas){
   ref.child('viagens').child(id).child('qtd_vagas').set(vagas);
-}
+}*/
 
 
 
@@ -193,23 +196,24 @@ function realizarReserva(rootRef, data, nodeParent){
 	var viagem;
 	var motorista;
 
-	nodeParent.on('value', function(snap){
-		viagem = snap.val();
-	});
+	var ouvinte = function ouvinte(snap){
+			viagem = snap.val();
+			salvaOrigemRes(rootRef,id_pas,viagem.uid,viagem.origem);
+			salvaDestinoRes(rootRef,id_pas,viagem.uid,viagem.destino);
+			salvaPrecoRes(rootRef,id_pas,viagem.uid,viagem.preco);
+			salvaDataRes(rootRef,id_pas,viagem.uid,viagem.data);
+			salvaHoraRes(rootRef,id_pas,viagem.uid,viagem.horario);
+			salvaUidViaRes(rootRef,id_pas,viagem.uid);
+	}	
+	nodeParent.once('value', ouvinte);
 	
-	rootRef.child('users/motoristas').child(viagem.motorista).on('value', function(snap){
-				motorista = snap.val();
-	});
-
-	salvaOrigemRes(rootRef,id_pas,viagem.uid,viagem.origem);
-	salvaDestinoRes(rootRef,id_pas,viagem.uid,viagem.destino);
-	salvaPrecoRes(rootRef,id_pas,viagem.uid,viagem.preco);
-	salvaDataRes(rootRef,id_pas,viagem.uid,viagem.data);
-	salvaHoraRes(rootRef,id_pas,viagem.uid,viagem.horario);
-
-	salvaUidMotRes(rootRef,id_pas,viagem.uid,motorista);
-	salvaNomeMotRes(rootRef,id_pas,viagem.uid,motorista);
-	salvaFotoMotRes(rootRef,id_pas,viagem.uid,motorista);
+	var motOuvinte = function motOuvinte(snap){
+			motorista = snap.val();
+			salvaUidMotRes(rootRef,id_pas,viagem.uid,motorista);
+	}
+	rootRef.child('users/motoristas').child(viagem.uid_mot).once('value', motOuvinte);
+	
+	rootRef.child("viagens").child(viagem.uid).child("passageiros").child(id_pas).child("reservado").set(true)
 }
 
 function salvaOrigemRes(ref, id_pas, id_via, origem){
@@ -227,18 +231,15 @@ function salvaDataRes(ref, id_pas, id_via, data){
 function salvaHoraRes(ref, id_pas, id_via, hora){
 	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('horario').set(hora);
 }
+function salvaUidViaRes(ref, id_pas, id_via){
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('uid').set(id_via);
+}
 function salvaUidMotRes(ref, id_pas, id_via, mot){
-	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('motorista').child('uid').set(mot.uid);
-}
-function salvaNomeMotRes(ref, id_pas, id_via, mot){
-	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('motorista').child('nome').set(mot.nome);
-}
-function salvaFotoMotRes(ref, id_pas, id_via, mot){
-	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('motorista').child('fotoUrl').set(mot.fotoUrl);
+	ref.child('viagens_passageiro_principal').child(id_pas).child(id_via).child('uid_mot').set(mot.uid);
 }
 
 //Remover
-exports.remover = functions.database.ref('viagem_motorista/{uid_mot}/{uid}').onDelete(event => {
+/*exports.remover = functions.database.ref('viagem_motorista/{uid_mot}/{uid}').onDelete(event => {
   const rootRef = event.data.ref.root;
   const data = event.data.previous.val();
 
@@ -253,4 +254,4 @@ function remover(rootRef, data){
 
 function removeViagem(ref, id){
 	ref.child('viagens').removeChild(id);
-}
+}*/
